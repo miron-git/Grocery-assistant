@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Последние обновления</title>
+    </head>
+    
+    <body>
+        <h1>Последние обновления на сайте</h1>
+        {% for recipe in recipe_list %}
+            <p>{{ recipe.author|linebreaksbr }}</p>
+            <p>{{ recipe.text|linebreaksbr }}</p>
+            <p>{{ recipe.title|linebreaksbr }}</p>
+            {% for recipe in recipe.ingredient.all %}
+                <p>{{ recipe.ingredient }}</p>
+                <p>{{ recipe.weight}}{{recipe.ingredient.unit}}</p> 
+            {% endfor %}
+            <p>{{ recipe.ingredient }}</p>
+            <p>{{ recipe.tag|linebreaksbr }}</p>
+            <p>{{ recipe.time|linebreaksbr }}</p>
+            <p>{{ recipe.pub_date|linebreaksbr }}</p>
+        <hr>
+        {% endfor %}
+        <a href="{% url 'recipe_new' %}"> asdas</a>
+    </body>
+</html>
