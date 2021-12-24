@@ -11,10 +11,18 @@
         {% for recipe in recipe_list %}
             <p>{{ recipe.author|linebreaksbr }}</p>
             <p>{{ recipe.text|linebreaksbr }}</p>
-            <p>{{ recipe.title|linebreaksbr }}</p>
+            <p>{{ recipe.name|linebreaksbr }}</p>
+            {% load thumbnail %}
+            {% thumbnail recipe.image "560x139" crop="center" upscale=True as im %}
+                <img class="card-img" src="{{ im.url }}">
+            {% endthumbnail %}
             {% for recipe in recipe.ingredient.all %}
                 <p>{{ recipe.ingredient }}</p>
                 <p>{{ recipe.weight}}{{recipe.ingredient.unit}}</p> 
+            {% endfor %}
+            {% for recipe in recipe.tag.all %}
+                <p>{{ recipe.tag }}</p>
+                
             {% endfor %}
             <p>{{ recipe.ingredient }}</p>
             <p>{{ recipe.tag|linebreaksbr }}</p>

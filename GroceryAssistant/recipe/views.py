@@ -8,11 +8,12 @@ def index(request):
 
 def recipe_new(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
+        form = RecipeForm(request.POST, files=request.FILES or None)
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
+            form.save_m2m()
             return redirect('index')
         return render(request, 'recipe/formRecipe.html', {'form': form})
     form = RecipeForm()

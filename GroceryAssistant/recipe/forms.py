@@ -5,14 +5,6 @@ from django import forms
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['title', 'text', 'tag', 'image', 'time', 'ingredient']
-
-class TagForm(forms.ModelForm):
-    class Meta:
-        model = Tag
-        fields = ['breakfast', 'lunch', 'dinner']
-# class RecipeIngredientForm(forms.ModelForm):
-
-#     class Meta:
-#         model = RecipeIngredient
-#         fields = ['recipe', 'weight', 'ingredient']
+        fields = ['name', 'description', 'time', 'image', 'tag', ]
+        widgets = {'tag': forms.CheckboxSelectMultiple}
+        #'ingredient'
