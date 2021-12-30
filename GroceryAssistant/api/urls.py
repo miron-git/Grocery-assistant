@@ -1,6 +1,6 @@
 from django.urls import path, include
-from .views import APIIngredient
+from .views import APIProduct
 
 urlpatterns = [
-    path('ingredients/', APIIngredient.as_view()),
+    path('ingredients/', APIProduct.as_view()),
 ]

@@ -16,18 +16,22 @@
             {% thumbnail recipe.image "560x139" crop="center" upscale=True as im %}
                 <img class="card-img" src="{{ im.url }}">
             {% endthumbnail %}
-            {% for recipe in recipe.ingredient.all %}
-                <p>{{ recipe.ingredient }}</p>
-                <p>{{ recipe.weight}}{{recipe.ingredient.unit}}</p> 
+            -------------------
+            {% for recipe in recipe_ingr %}
+                <p>{{ recipe.ingredient }}</p> <p>{{ recipe.weight}}
+                </p>
             {% endfor %}
+            --------------------
             {% for recipe in recipe.tag.all %}
-                <p>{{ recipe.tag }}</p>
-                
+                <p>{{ recipe }}</p>   
             {% endfor %}
-            <p>{{ recipe.ingredient }}</p>
-            <p>{{ recipe.tag|linebreaksbr }}</p>
             <p>{{ recipe.time|linebreaksbr }}</p>
-            <p>{{ recipe.pub_date|linebreaksbr }}</p>
+            --------------------------------------
+
+            {% for recipe in recipe.ingredient.all %}
+            <p>{{ recipe }}</p>   
+        {% endfor %}
+        
         <hr>
         {% endfor %}
         <a href="{% url 'recipe_new' %}"> asdas</a>
