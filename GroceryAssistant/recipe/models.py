@@ -7,7 +7,7 @@ class Product(models.Model):
     dimension = models.CharField(max_length=20, verbose_name = 'Единицы измерения')
 
     def __str__(self):
-        return f"{self.title}"
+        return self.title
 
 class Ingredient(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name = 'Ингредиент')
@@ -15,13 +15,14 @@ class Ingredient(models.Model):
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, verbose_name = 'Рецепт')
 
     def __str__(self):
-        return f"{self.product}", f"{self.quantity}"
+        return self.product, self.quantity
+        
 
 class Tag(models.Model):
     tag = models.CharField(max_length=50, verbose_name = 'Тэг')
 
     def __str__(self):
-        return f"{self.tag}"
+        return self.tag
 
 class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipes")
