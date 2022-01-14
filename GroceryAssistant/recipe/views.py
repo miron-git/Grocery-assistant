@@ -5,10 +5,9 @@ from .utils import get_dict_ingredients
 
 
 def index(request):
-    recipe_list = Recipe.objects.all()
-    recipe_ingr = Ingredient.objects.all()
+    recipe_list = Recipe.objects.all().order_by("-pub_date")
   
-    return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list, 'recipe_ingr': recipe_ingr})
+    return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list})
 
 def recipe_new(request):
     # if request.method == 'POST':
@@ -28,3 +27,8 @@ def recipe_new(request):
         return render(request, 'recipe/formRecipe.html', {'form': form})
     # form = RecipeForm()
     # return render(request, 'recipe/formRecipe.html', {'form': form})
+
+def recipe_view(request, recipe_id):
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    
+    return render(request, 'recipe/singlePage.html', {'recipe': recipe})

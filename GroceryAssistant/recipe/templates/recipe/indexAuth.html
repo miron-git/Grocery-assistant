@@ -31,10 +31,10 @@
         {% for recipe in recipe_list %}
         <div class="card" data-id="{{ recipe.id }}">
             {% thumbnail recipe.image "960x500" crop="center" upscale=True as im %}
-            <a href="#" class="link" target="_blank"><img src="{{ im.url }}" alt="Заглавная картинка" class="card__image"></a>
+            <a href="{% url 'recipe_view' recipe.id %}" class="link" target="_blank"><img src="{{ im.url }}" alt="Заглавная картинка" class="card__image"></a>
             {% endthumbnail %}
             <div class="card__body">
-                <a class="card__title link" href="#" target="_blank">{{ recipe.name }}</a>
+                <a class="card__title link" href="{% url 'recipe_view' recipe.id %}" target="_blank">{{ recipe.name }}</a>
                 <ul class="card__items">
                     {% for tag in recipe.tags.all %}
                         {% if tag.tag == 'Завтрак' %}
