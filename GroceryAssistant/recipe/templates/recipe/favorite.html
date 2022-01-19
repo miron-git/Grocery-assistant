@@ -2,14 +2,14 @@
 {% csrf_token %}
 {% load user_filters %}
 {% load static %}
-{% block title %}Рецепты{% endblock title %}
+{% block title %}Избранное{% endblock title %}
 {% block css %}
     <link rel="stylesheet" href="{% static '/pages/index.css' %}">
 {% endblock css %}
 
 {% block content %}
 {% load thumbnail %}
-        <div class="main__header">
+        {% comment %} <div class="main__header">
             <h1 class="main__title">Рецепты</h1>
             <ul class="tags">
                 <li class="tags__item">
@@ -25,9 +25,9 @@
                     <label for="dinner" class="tags__label">Ужин</label>
                 </li>
             </ul>
-        </div>
+        </div> {% endcomment %}
         <div class="card-list">
-        {% for recipe in recipe_list %}
+        {% for recipe in favorites_list %}
         <div class="card" data-id="{{ recipe.id }}">
             {% thumbnail recipe.image "960x500" crop="center" upscale=True as im %}
             <a href="{% url 'recipe_view' recipe.id %}" class="link" target="_blank"><img src="{{ im.url }}" alt="Заглавная картинка" class="card__image"></a>

@@ -1,4 +1,3 @@
-
 from pathlib import Path, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -125,5 +124,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #BACKEND фильтрации
 REST_FRAMEWORK = {
-        'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+        ],
     }
+

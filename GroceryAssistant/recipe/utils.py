@@ -8,18 +8,3 @@ def get_dict_ingredients(request):
             _ = key.split('_')
             ingredients[ingredient_name] = Decimal(request.POST[f'valueIngredient_{_[1]}'].replace(',', '.'))
     return ingredients
-
-    # ingredients = {}
-    # for ingredient in ingredients:
-    #     product = models.Product.objects.get(
-    #         title=ingredient["title"],
-    #         dimension=ingredient["unit"]
-    #     )
-    #     result.append(
-    #         models.Ingredient(
-    #             recipe=recipe,
-    #             product=product,
-    #             quantity=ingredient["quantity"],
-    #         )
-    #     )
-    # return ingredients

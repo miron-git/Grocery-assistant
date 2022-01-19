@@ -1,8 +1,21 @@
 from rest_framework import serializers
-from recipe.models import Ingredient, Recipe, Tag, Product
+from recipe.models import Ingredient, Recipe, Tag, Product, User
+from .models import Favorite
+from django.contrib.auth import get_user_model
 
 class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('title', 'dimension')
         model = Product
+
+class FavoriteSerializer(serializers.ModelSerializer):
+
+    user = serializers.SlugRelatedField(slug_field='id', read_only = True)
+    id = serializers.SlugRelatedField(
+        slug_field='id', queryset=Recipe.objects.all(), source='recipe'
+        )
+
+    class Meta:
+        fields = ('user', 'id')
+        model = Favorite
