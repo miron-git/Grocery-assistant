@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from recipe.models import Recipe, Ingredient, Tag, Product
-from .models import Favorite
-from .serializers import ProductSerializer, FavoriteSerializer
+from .models import Favorite, Subscription
+from .serializers import ProductSerializer, FavoriteSerializer, SubscribeSerializer
 from rest_framework import generics, filters
 import django_filters.rest_framework
 from rest_framework.views import APIView
@@ -33,4 +33,14 @@ class APIFavorite(APIView):
 
 class APISubscriptions(APIView):
     def post(self, request):
-        pass
+        serializer = SubscribeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(subscriber=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        subscribe = Subscription.objects.filter(subscriber_id=request.user, author_id=id)
+        subscribe.delete()
+        return Response({"success": bool(subscribe.delete())})
+

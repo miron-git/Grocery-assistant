@@ -47,7 +47,7 @@
                 </ul>
                 <div class="card__items card__items_column">
                     <p class="card__text"><span class="icon-time"></span>{{ recipe.time }} мин.</p>
-                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">{{ recipe.author }}</a></p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">{{ recipe.author.last_name }} {{ recipe.author.first_name }}</a></p>
                 </div>
             </div>
             {% if user.is_authenticated %}
@@ -58,13 +58,12 @@
                         <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
                         {% else %}
                         <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            </div>
-            {% endif %}
         </div>
-        {% endfor %}
-        
+        {% endif %}
+    </div>
+    {% endfor %}
     {% comment %} </div>
         <nav class="pagination" aria-label="Search results pages">
             <ul class="pagination__container">

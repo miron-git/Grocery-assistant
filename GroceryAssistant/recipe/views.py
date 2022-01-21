@@ -38,4 +38,7 @@ def favorites(request):
 
 def tags(request, id):
     recipes = Recipe.objects.filter(tag=id)
-    return render(request, )
+    return render(request)
+
+def subscriptions(request):
+    pass
