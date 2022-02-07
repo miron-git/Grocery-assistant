@@ -54,7 +54,7 @@
             <div class="card__footer">
                 <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
                 {% if recipe.author != request.user  %}
-                    {% if recipe in favorites_list %}
+                    {% if recipe in favorite_list %}
                         <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
                         {% else %}
                         <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
@@ -90,4 +90,3 @@
     <script src="{% static 'js/api/Api.js' %}"></script>
     <script src="{% static 'indexAuth.js' %}"></script>
     {% endblock style %}
-

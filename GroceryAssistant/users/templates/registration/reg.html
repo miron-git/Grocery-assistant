@@ -10,7 +10,7 @@
     <h1 class="main__title">Регистрация</h1>
 </div>
 <div class="form-container">
-    <form class="form" method="post" action="{% url 'signup' %}">
+    <form class="form" method="post" action="{% url 'registration' %}">
         {% csrf_token %}
         {% for field in form %}
         <div class="form__group">

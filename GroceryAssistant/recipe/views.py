@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Recipe, Ingredient, Product
+from django.contrib.auth.decorators import login_required
+from .models import Recipe, Ingredient, Product, User
 from api.models import Favorite
 from .forms import RecipeForm
 from .utils import get_dict_ingredients
 
-
+# @login_required
 def index(request):
     recipe_list = Recipe.objects.all().order_by("-pub_date")
-    favorites_list = Recipe.objects.filter(recipes_favorites__user=request.user)
+    favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
 
-    return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list, 'favorites_list': favorites_list})
+    return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list, 'favorite_list': favorite_list})
 
 def recipe_new(request):
     # if request.method == 'POST':
@@ -28,9 +29,26 @@ def recipe_new(request):
             return redirect('index')
         return render(request, 'recipe/formRecipe.html', {'form': form})
 
+def recipe_edit(request, recipe_id):
+    #profile = get_object_or_404(User, username=username)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    
+    if request.user != recipe.author:
+        return redirect('recipe_view', recipe_id=recipe_id)
+    else:
+        if request.method == 'POST':
+            form = RecipeForm(request.POST, files=request.FILES, instance=recipe)
+            if form.is_valid():
+                form.save()
+                return redirect('recipe_view', recipe_id=recipe_id)
+    form = RecipeForm(instance=recipe)
+    return render(request, 'recipe/formChangeRecipe.html', {'form': form, 'recipe': recipe})
+
 def recipe_view(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
-    return render(request,'recipe/singlePage.html', {'recipe': recipe})
+    favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
+    subscribe_list = User.objects.filter(authors__subscriber_id=request.user)
+    return render(request,'recipe/singlePage.html', {'recipe': recipe, 'favorite_list': favorite_list, 'subscribe_list': subscribe_list})
 
 def favorites(request):
     favorites_list = Recipe.objects.filter(recipes_favorites__user_id=request.user)
@@ -41,4 +59,6 @@ def tags(request, id):
     return render(request)
 
 def subscriptions(request):
-    pass
+    user_list = User.objects.filter(authors__subscriber_id=request.user)
+    recipe_list = Recipe.objects.filter(author__in=user_list)
+    return render(request, 'recipe/myFollow.html', {'user_list': user_list, 'recipe_list': recipe_list})

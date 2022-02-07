@@ -5,7 +5,8 @@ class RecipeAdmin(admin.ModelAdmin):
     # перечисляем поля, которые должны отображаться в админке
     list_display = ("pk", "name", 'time', "author", "description", "image") 
     # это свойство сработает для всех колонок: где пусто - там будет эта строка
-    empty_value_display = ("-пусто-") 
+    empty_value_display = ("-пусто-")
+    # prepopulated_fields = {'slug': ('name',)} 
 
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ("pk", "quantity") 

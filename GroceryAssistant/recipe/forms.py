@@ -9,6 +9,6 @@ User = get_user_model()
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['name', 'description', 'time', 'image', 'tags' ]
+        fields = ['name', 'description', 'time', 'image', 'tags']
         widgets = {'tags': forms.CheckboxSelectMultiple}
     
