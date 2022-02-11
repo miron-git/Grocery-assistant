@@ -12,9 +12,9 @@ SECRET_KEY = 'q'
 
 # SECURITY WARNING: 
 # don't run with debug turned on in production!
-DEBUG = False
+DEBUG = 'False'
 
-ALLOWED_HOSTS = ['127.0.0.1:8000']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -30,9 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail', #работа с графикой
-    # 'taggit', #работа с тегами
     'rest_framework',
     'django_filters',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,6 @@ REST_FRAMEWORK = {
 LOGIN_URL = "/auth/login/"
 LOGIN_REDIRECT_URL = "index" 
 LOGOUT_REDIRECT_URL = "index"
+
+# Идентификатор текущего сайта
+SITE_ID = 1

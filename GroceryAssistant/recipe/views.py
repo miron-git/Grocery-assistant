@@ -8,12 +8,13 @@ from .utils import get_dict_ingredients
 # @login_required
 def index(request):
     recipe_list = Recipe.objects.all().order_by("-pub_date")
-    favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
-
-    return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list, 'favorite_list': favorite_list})
+    if request.user.is_authenticated:
+        favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
+        return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list, 'favorite_list': favorite_list})
+    else:
+        return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list})
 
 def recipe_new(request):
-    # if request.method == 'POST':
         form = RecipeForm(request.POST, files=request.FILES or None)
         ingredients = get_dict_ingredients(request)
         if form.is_valid():
@@ -30,7 +31,6 @@ def recipe_new(request):
         return render(request, 'recipe/formRecipe.html', {'form': form})
 
 def recipe_edit(request, recipe_id):
-    #profile = get_object_or_404(User, username=username)
     recipe = get_object_or_404(Recipe, id=recipe_id)
     
     if request.user != recipe.author:

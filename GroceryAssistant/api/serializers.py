@@ -13,7 +13,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     user = serializers.SlugRelatedField(slug_field='id', read_only = True)
     id = serializers.SlugRelatedField(
-        slug_field='id', queryset=Recipe.objects.all(), source='recipe'
+        slug_field='id', queryset = Recipe.objects.all(), source='recipe'
         )
 
     class Meta:
