@@ -1,18 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Recipe, Ingredient, Product, User
-from api.models import Favorite
+from api.models import Favorite, Purchase
 from .forms import RecipeForm
 from .utils import get_dict_ingredients
+from django.core.paginator import Paginator
 
 # @login_required
 def index(request):
-    recipe_list = Recipe.objects.all().order_by("-pub_date")
+    recipe_list = Recipe.objects.all().order_by('-pub_date').all()
+    paginator = Paginator(recipe_list, 6)
+    page_number = request.GET.get('page')  # переменная в URL с номером запрошенной страницы
+    page = paginator.get_page(page_number)  # получить записи с нужным смещением
+    context = {'page': page, 'paginator': paginator,}
     if request.user.is_authenticated:
         favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
-        return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list, 'favorite_list': favorite_list})
+        return render(request, 'recipe/indexAuth.html', {'favorite_list': favorite_list, 'page': page, 'paginator': paginator})
     else:
-        return render(request, 'recipe/indexAuth.html', {'recipe_list': recipe_list})
+        return render(request, 'recipe/indexAuth.html', context)
 
 def recipe_new(request):
         form = RecipeForm(request.POST, files=request.FILES or None)
@@ -62,3 +67,7 @@ def subscriptions(request):
     user_list = User.objects.filter(authors__subscriber_id=request.user)
     recipe_list = Recipe.objects.filter(author__in=user_list)
     return render(request, 'recipe/myFollow.html', {'user_list': user_list, 'recipe_list': recipe_list})
+
+def purchases(request):
+    purchases_list = Recipe.objects.filter(recipes_purchases__user=request.user)
+    return render(request, 'recipe/shopList.html', {'purchases_list': purchases_list})

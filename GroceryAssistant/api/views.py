@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from recipe.models import Recipe, Ingredient, Tag, Product
-from .models import Favorite, Subscription
-from .serializers import ProductSerializer, FavoriteSerializer, SubscribeSerializer
+from .models import Favorite, Subscription, Purchase
+from .serializers import ProductSerializer, FavoriteSerializer, SubscribeSerializer, PurchaseSerializer 
 from rest_framework import generics, filters
 import django_filters.rest_framework
 from rest_framework.views import APIView
@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import status
 from django.contrib.auth import get_user_model
+
 
 class APIProduct(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -31,7 +32,7 @@ class APIFavorite(APIView):
         #т.к JS ждет "success": true/false
         return Response({"success": bool(favorite.delete())})
 
-class APISubscriptions(APIView):
+class APISubscription(APIView):
     def post(self, request):
         serializer = SubscribeSerializer(data=request.data)
         if serializer.is_valid():
@@ -44,3 +45,19 @@ class APISubscriptions(APIView):
         subscribe.delete()
         return Response({"success": bool(subscribe.delete())})
 
+class APIPurchase(APIView):
+
+    def get(self, request):
+       pass
+
+    def post(self, request):
+        serializer = PurchaseSerializer (data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        purchase = Purchase.objects.filter(user_id=request.user, recipe_id=id)
+        purchase.delete()
+        return Response({"success": bool(purchase.delete())})
