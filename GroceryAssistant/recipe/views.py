@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Recipe, Ingredient, Product, User
+from .models import Recipe, Ingredient, Product, User, Tag
 from api.models import Favorite, Purchase
 from .forms import RecipeForm
 from .utils import get_dict_ingredients
@@ -12,11 +12,14 @@ def index(request):
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')  # переменная в URL с номером запрошенной страницы
     page = paginator.get_page(page_number)  # получить записи с нужным смещением
+    tags = Tag.objects.get(id=2).recipe_set.all
     context = {'page': page, 'paginator': paginator}
     if request.user.is_authenticated:
         favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
         purchase_list = Recipe.objects.filter(recipes_purchases__user=request.user)
-        return render(request, 'recipe/indexAuth.html', {'favorite_list': favorite_list, 'page': page, 'paginator': paginator, 'purchase_list': purchase_list})
+        return render(request, 'recipe/indexAuth.html', {'favorite_list': favorite_list, 'page': page, 
+                                                        'paginator': paginator, 'purchase_list': purchase_list, 
+                                                        'tags':tags})
     else:
         return render(request, 'recipe/indexAuth.html', context)
 

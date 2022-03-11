@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from .validators import validate_time, validate_file_size
 User = get_user_model()
 
 class Product(models.Model):
@@ -29,8 +30,8 @@ class Recipe(models.Model):
     name = models.CharField(max_length=50, verbose_name = 'Название рецепта')
     description = models.TextField(verbose_name = 'Текст')
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
-    image = models.ImageField(upload_to='recipes/', blank=True, null=True)
-    time = models.PositiveIntegerField(verbose_name = 'Время приготовления')
+    image = models.ImageField(upload_to='recipes/', validators=[validate_file_size])
+    time = models.PositiveIntegerField(verbose_name = 'Время приготовления', validators=[validate_time])
     tags = models.ManyToManyField(Tag, verbose_name = 'Тег')
     ingredients = models.ManyToManyField(Product, through = Ingredient, verbose_name = 'Ингредиент блюда')
     
