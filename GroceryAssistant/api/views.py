@@ -16,7 +16,7 @@ class APIProduct(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title',]
+    search_fields = ['^title',]
 
 class APIFavorite(APIView):
     def post(self, request):
@@ -29,7 +29,6 @@ class APIFavorite(APIView):
     def delete(self, request, id):
         favorite = Favorite.objects.filter(recipe_id=id, user_id=request.user)
         favorite.delete()
-        #т.к JS ждет "success": true/false
         return Response({"success": bool(favorite.delete())})
 
 class APISubscription(APIView):

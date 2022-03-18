@@ -12,9 +12,8 @@ SECRET_KEY = 'q'
 
 # SECURITY WARNING: 
 # don't run with debug turned on in production!
-DEBUG = 'False'
-
-ALLOWED_HOSTS = []
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -141,7 +140,6 @@ LOGOUT_REDIRECT_URL = "index"
 # Идентификатор текущего сайта
 SITE_ID = 1
 
-DEBUG = True
 INTERNAL_IPS = [
     "127.0.0.1",
 ]

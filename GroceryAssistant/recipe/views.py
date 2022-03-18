@@ -5,23 +5,25 @@ from api.models import Favorite, Purchase
 from .forms import RecipeForm
 from .utils import get_dict_ingredients
 from django.core.paginator import Paginator
+from django.http import HttpResponse
+from django.db.models import Sum
+
 
 # @login_required
 def index(request):
-    recipe_list = Recipe.objects.all().order_by('-pub_date').all()
+    recipe_list = Recipe.objects.all().order_by('-pub_date')
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')  # переменная в URL с номером запрошенной страницы
     page = paginator.get_page(page_number)  # получить записи с нужным смещением
-    tags = Tag.objects.get(id=2).recipe_set.all
+    # tags = Tag.objects.get(id=2).recipe_set.all
     context = {'page': page, 'paginator': paginator}
-    if request.user.is_authenticated:
-        favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
-        purchase_list = Recipe.objects.filter(recipes_purchases__user=request.user)
-        return render(request, 'recipe/indexAuth.html', {'favorite_list': favorite_list, 'page': page, 
-                                                        'paginator': paginator, 'purchase_list': purchase_list, 
-                                                        'tags':tags})
-    else:
-        return render(request, 'recipe/indexAuth.html', context)
+    # if request.user.is_authenticated:
+    #     favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
+    #     purchase_list = Recipe.objects.filter(recipes_purchases__user=request.user)
+    #     return render(request, 'recipe/indexAuth.html', {'page': page, 
+    #                                                     'paginator': paginator, 'purchase_list': purchase_list,})
+    # else:
+    return render(request, 'recipe/indexAuth.html', context)
 
 def recipe_new(request):
         form = RecipeForm(request.POST, files=request.FILES or None)
@@ -49,12 +51,10 @@ def recipe_edit(request, recipe_id):
     for field in form.errors:
         print(field)
     if form.is_valid():
-        print('test111111112')
         Ingredient.objects.filter(recipe=recipe).delete()
         recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
-        print('test111111111')
         for key, value in ingredients.items():
             product = get_object_or_404(Product, title=key)
             recipe_ing = Ingredient(recipe=recipe, product=product, quantity=value)
@@ -73,9 +73,9 @@ def recipe_delete(request, recipe_id):
 
 def recipe_view(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
-    favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
+    # favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
     subscribe_list = User.objects.filter(authors__subscriber_id=request.user)
-    return render(request,'recipe/singlePage.html', {'recipe': recipe, 'favorite_list': favorite_list, 'subscribe_list': subscribe_list})
+    return render(request,'recipe/singlePage.html', {'recipe': recipe, 'subscribe_list': subscribe_list})
 
 def favorites(request):
     favorites_list = Recipe.objects.filter(recipes_favorites__user_id=request.user)
@@ -93,3 +93,40 @@ def subscriptions(request):
 def purchases(request):
     purchases_list = Recipe.objects.filter(recipes_purchases__user=request.user)
     return render(request, 'recipe/shopList.html', {'purchases_list': purchases_list})
+
+def profile(request, username):
+    profile = get_object_or_404(User, username=username)
+    recipe_list = Recipe.objects.filter(author=profile.id)
+    return render(request, 'recipe/authorRecipe.html', {'recipe_list': recipe_list, 'profile': profile})
+
+def getShoplist(request):
+    items = ''
+    text = (Recipe.objects.filter(recipes_purchases__user=request.user)
+        .values('ingredients__title', 'ingredients__dimension')
+        .annotate(quantity=Sum('quantity__quantity'))
+    )
+#['ingredients__title'] ['ingredients__dimension'] ['quantity']
+    for item in text:
+        items += (f"{item['ingredients__title']}"
+            f" \u2014 {item['quantity']}"
+            f"{item['ingredients__dimension']} \n"
+        )
+
+    response = HttpResponse(items,
+        content_type='text/plane',
+        headers={'Content-Disposition': 'attachment; filename="ShopList.txt"'},
+    )
+
+    return response
+
+def page_not_found(request, exception):
+    #  Переменная exception содержит отладку
+    return render(
+        request, 
+        "misc/404.html", 
+        {"path": request.path}, 
+        status=404
+    )
+
+def server_error(request):
+    return render(request, "misc/500.html", status=500)

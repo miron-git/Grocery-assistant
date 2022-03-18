@@ -4,7 +4,7 @@
 {% block css %}
     <link rel="stylesheet" href="{% static '/pages/single.css' %}">
 {% endblock css %}
-
+{% load user_filters %}
 {% block content %}
 {% load thumbnail %}
 <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
@@ -14,14 +14,18 @@
             <div class="single-card__info">
                 <div class="single-card__header-info">
                     <h1 class="single-card__title">{{ recipe.name }}</h1>
-                    {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
             <div class="card__footer">
-                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                {% if not recipe|in_shopping:request.user %}
+                        <button class="button button_style_light-blue" name="purchases" data-out ><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                    {% else %}
+                        <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
+                    {% endif %}
                 {% if recipe.author != request.user  %}
-                    {% if recipe in favorite_list %}
-                        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-                        {% else %}
+                {% if not recipe|favorite_list:request.user %}
                         <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                        {% else %}
+                        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
                     {% endif %}
                 {% endif %}
             </div>
