@@ -15,5 +15,5 @@ def in_shopping(value, user):
 
 @register.filter
 def favorite_list(value, user):
-    return Favorite.objects.filter(recipe=value, user=user).exists()
+    return Favorite.objects.filter(recipe=value, user=user)
 

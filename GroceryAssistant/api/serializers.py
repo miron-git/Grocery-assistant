@@ -12,9 +12,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class FavoriteSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='id', read_only = True)
-    id = serializers.SlugRelatedField(
-        slug_field='id', queryset=Recipe.objects.all(), source='recipe'
-        )
+    id = serializers.SlugRelatedField(slug_field='id', queryset=Recipe.objects.all(), source='recipe')
 
     class Meta:
         fields = ('user', 'id')
@@ -22,12 +20,8 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
-    subscriber = serializers.SlugRelatedField(
-        slug_field='id', read_only = True
-        )
-    id = serializers.SlugRelatedField(
-        slug_field='id', queryset=User.objects.all(), source='author'
-        )
+    subscriber = serializers.SlugRelatedField(slug_field='id', read_only = True)
+    id = serializers.SlugRelatedField(slug_field='id', queryset=User.objects.all(), source='author')
 
     class Meta:
         fields = ('subscriber', 'id')
@@ -35,9 +29,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
-    id = serializers.SlugRelatedField(
-        slug_field='id', queryset=Recipe.objects.all(), source='recipe'
-        )
+    id = serializers.SlugRelatedField(slug_field='id', queryset=Recipe.objects.all(), source='recipe')
     user = serializers.SlugRelatedField(slug_field='id', read_only = True)
 
     class Meta:

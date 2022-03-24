@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Recipe, Ingredient, Product, User, Tag
 from api.models import Favorite, Purchase
@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.db.models import Sum
 
 
-# @login_required
+
 def index(request):
     recipe_list = Recipe.objects.all().order_by('-pub_date')
     paginator = Paginator(recipe_list, 6)
@@ -25,6 +25,7 @@ def index(request):
     # else:
     return render(request, 'recipe/indexAuth.html', context)
 
+@login_required
 def recipe_new(request):
         form = RecipeForm(request.POST, files=request.FILES or None)
         ingredients = get_dict_ingredients(request)
@@ -41,6 +42,7 @@ def recipe_new(request):
             return redirect('index')
         return render(request, 'recipe/formRecipe.html', {'form': form})
 
+@login_required
 def recipe_edit(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if request.user != recipe.author:
@@ -63,6 +65,7 @@ def recipe_edit(request, recipe_id):
         return redirect('recipe_view', recipe_id=recipe_id)
     return render(request, 'recipe/formChangeRecipe.html', {'form': form, 'recipe': recipe})
 
+@login_required
 def recipe_delete(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if recipe.author == request.user:
@@ -74,38 +77,48 @@ def recipe_delete(request, recipe_id):
 def recipe_view(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     # favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
-    subscribe_list = User.objects.filter(authors__subscriber_id=request.user)
-    return render(request,'recipe/singlePage.html', {'recipe': recipe, 'subscribe_list': subscribe_list})
-
+    if request.user.is_authenticated:
+        subscribe_list = User.objects.filter(authors__subscriber_id=request.user)
+        return render(request,'recipe/singlePage.html', {'recipe': recipe, 'subscribe_list': subscribe_list})
+    return render(request, 'recipe/singlePage.html', {'recipe': recipe})
+@login_required
 def favorites(request):
     favorites_list = Recipe.objects.filter(recipes_favorites__user_id=request.user)
     return render(request, 'recipe/favorite.html', {'favorites_list': favorites_list})
 
-def tags(request, id):
-    recipes = Recipe.objects.filter(tag=id)
-    return render(request)
+def tags(request, tag_slug):
+    recipe_list = get_list_or_404(Recipe, tags__slug=tag_slug)
+    paginator = Paginator(recipe_list, 6)
+    page_number = request.GET.get('page')  # переменная в URL с номером запрошенной страницы
+    page = paginator.get_page(page_number)  # получить записи с нужным смещением
+    context = {'page': page, 'paginator': paginator}
+    return render(request, 'recipe/indexAuth.html', context)
 
+@login_required
 def subscriptions(request):
     user_list = User.objects.filter(authors__subscriber_id=request.user)
     recipe_list = Recipe.objects.filter(author__in=user_list)
     return render(request, 'recipe/myFollow.html', {'user_list': user_list, 'recipe_list': recipe_list})
 
+@login_required
 def purchases(request):
     purchases_list = Recipe.objects.filter(recipes_purchases__user=request.user)
     return render(request, 'recipe/shopList.html', {'purchases_list': purchases_list})
 
+@login_required
 def profile(request, username):
     profile = get_object_or_404(User, username=username)
     recipe_list = Recipe.objects.filter(author=profile.id)
     return render(request, 'recipe/authorRecipe.html', {'recipe_list': recipe_list, 'profile': profile})
 
+@login_required
 def getShoplist(request):
-    items = ''
+    items = 'Список продуктов: \n'
     text = (Recipe.objects.filter(recipes_purchases__user=request.user)
         .values('ingredients__title', 'ingredients__dimension')
         .annotate(quantity=Sum('quantity__quantity'))
     )
-#['ingredients__title'] ['ingredients__dimension'] ['quantity']
+
     for item in text:
         items += (f"{item['ingredients__title']}"
             f" \u2014 {item['quantity']}"

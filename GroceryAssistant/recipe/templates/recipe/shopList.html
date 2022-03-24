@@ -18,7 +18,7 @@
                     {% thumbnail purchases.image "960x500" as im %}
                     <img src="{{ im.url }}" alt="Картинка" class="recipe__image recipe__image_big">
                     {% endthumbnail %}
-                    <h3 class="recipe__title">{{ purchases.name }}</h3>
+                    <a <h3 href="{% url 'recipe_view' purchases.id %} "class="recipe__title">{{ purchases.name }}</h3></a>
                     
                     <p class="recipe__text"><span class="icon-time"></span> {{ purchases.time }} мин.</p>
                 </div>

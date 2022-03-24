@@ -21,7 +21,8 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     tag = models.CharField(max_length=50, verbose_name = 'Тэг')
-
+    slug = models.SlugField(max_length=10, unique=True, db_index=True, verbose_name='Slug')
+    
     def __str__(self):
         return self.tag
 
@@ -34,6 +35,5 @@ class Recipe(models.Model):
     time = models.PositiveIntegerField(verbose_name = 'Время приготовления', validators=[validate_time])
     tags = models.ManyToManyField(Tag, verbose_name = 'Тег')
     ingredients = models.ManyToManyField(Product, through = Ingredient, verbose_name = 'Ингредиент блюда')
-    
     # slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name='URL')
 

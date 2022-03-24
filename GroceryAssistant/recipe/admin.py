@@ -15,7 +15,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ("pk", "title", "dimension") 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ("pk", "tag")
+    list_display = ("pk", "tag", "slug")
+    prepopulated_fields = {"slug": ("tag",)}
     
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)

@@ -46,6 +46,8 @@ class APISubscription(APIView):
 
 class APIPurchase(APIView):
 
+    # permission_classes = [IsAuthenticated]
+
     def get(self, request):
        pass
 
