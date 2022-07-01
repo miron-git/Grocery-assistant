@@ -3,6 +3,7 @@ from recipe.models import Ingredient, Recipe, Tag, Product, User
 from .models import Favorite, Subscription, Purchase
 from django.contrib.auth import get_user_model
 
+
 class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:

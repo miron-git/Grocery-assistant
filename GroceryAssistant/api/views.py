@@ -42,10 +42,9 @@ class APISubscription(APIView):
     def delete(self, request, id):
         subscribe = Subscription.objects.filter(subscriber_id=request.user, author_id=id)
         subscribe.delete()
-        return Response({"success": bool(subscribe.delete())})
+        return Response({"success": bool(subscribe.delete())}) 
 
 class APIPurchase(APIView):
-
     # permission_classes = [IsAuthenticated]
 
     def get(self, request):

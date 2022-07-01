@@ -6,6 +6,7 @@ from django.contrib.flatpages import views
 from django.conf import settings
 from django.conf.urls import handler404, handler500
 
+# Заглушки ошибок
 handler404 = "recipe.views.page_not_found"
 handler500 = "recipe.views.server_error"
 

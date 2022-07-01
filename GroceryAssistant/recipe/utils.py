@@ -2,6 +2,7 @@ from recipe.models import Recipe
 from decimal import Decimal
 
 def get_dict_ingredients(request):
+    # Фунция получения ингредиентов
     ingredients = {}
     for key, ingredient_name in request.POST.items():
         if 'nameIngredient' in key:

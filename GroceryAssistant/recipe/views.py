@@ -17,18 +17,12 @@ def index(request):
     page = paginator.get_page(page_number)  # получить записи с нужным смещением
     # tags = Tag.objects.get(id=2).recipe_set.all
     context = {'page': page, 'paginator': paginator}
-    # if request.user.is_authenticated:
-    #     favorite_list = Recipe.objects.filter(recipes_favorites__user=request.user)
-    #     purchase_list = Recipe.objects.filter(recipes_purchases__user=request.user)
-    #     return render(request, 'recipe/indexAuth.html', {'page': page, 
-    #                                                     'paginator': paginator, 'purchase_list': purchase_list,})
-    # else:
     return render(request, 'recipe/indexAuth.html', context)
 
 @login_required
 def recipe_new(request):
         form = RecipeForm(request.POST, files=request.FILES or None)
-        ingredients = get_dict_ingredients(request)
+        ingredients = get_dict_ingredients(request) 
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.author = request.user
@@ -81,6 +75,7 @@ def recipe_view(request, recipe_id):
         subscribe_list = User.objects.filter(authors__subscriber_id=request.user)
         return render(request,'recipe/singlePage.html', {'recipe': recipe, 'subscribe_list': subscribe_list})
     return render(request, 'recipe/singlePage.html', {'recipe': recipe})
+
 @login_required
 def favorites(request):
     favorites_list = Recipe.objects.filter(recipes_favorites__user_id=request.user)
@@ -113,6 +108,7 @@ def profile(request, username):
 
 @login_required
 def getShoplist(request):
+    # Получаем список ингредиентов в файле
     items = 'Список продуктов: \n'
     text = (Recipe.objects.filter(recipes_purchases__user=request.user)
         .values('ingredients__title', 'ingredients__dimension')
@@ -133,7 +129,6 @@ def getShoplist(request):
     return response
 
 def page_not_found(request, exception):
-    #  Переменная exception содержит отладку
     return render(
         request, 
         "misc/404.html", 
